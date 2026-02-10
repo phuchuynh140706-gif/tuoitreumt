@@ -1,0 +1,147 @@
+{% extends 'umt_youth_union/base.html' %}
+{% block title %}Chi tiết Xét duyệt{% endblock %}
+
+{% block content %}
+<form method="post"> {% csrf_token %}
+<div class="card" style="padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+    
+    <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 25px;">
+        <div>
+            <h2 style="margin: 0; color: #003366;">{{ ho_so.get_loai_danh_hieu_display }}</h2>
+            <p style="color: #666; margin-top: 5px;">
+                Người nộp: <b>{{ ho_so.sinh_vien.ho_ten }}</b> ({{ ho_so.sinh_vien.ma_sinh_vien }}) | 
+                Chi đoàn: <span style="color: #0056b3;">
+                    {% if ho_so.sinh_vien.chi_doan_gan_ket %}
+                        {{ ho_so.sinh_vien.chi_doan_gan_ket.ten_chi_doan }}
+                    {% else %}
+                        --
+                    {% endif %}
+                </span>
+            </p>
+        </div>
+        <div style="text-align: right;">
+            <span style="display:inline-block; padding: 8px 20px; border-radius: 25px; font-weight: bold; background: #eee; font-size: 14px; 
+            {% if ho_so.trang_thai == 'DAT' %}background:#d4edda; color:#155724;{% elif ho_so.trang_thai == 'TU_CHOI' %}background:#f8d7da; color:#721c24;{% else %}background:#fff3cd; color:#856404;{% endif %}">
+                {{ ho_so.get_trang_thai_display }}
+            </span>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 30px;">
+        <h4 style="color: #003366; border-left: 4px solid #003366; padding-left: 10px;">
+            <i class="fas fa-file-alt"></i> Thành tích & Mô tả
+        </h4>
+        
+        {% if user_role == 'BI_THU_TRUONG' and ho_so.trang_thai == 'CHO_TRUONG' %}
+            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#d35400;">Biên tập nội dung Vinh danh:</label>
+            <textarea name="noi_dung_vinh_danh" rows="6" style="width: 100%; padding: 15px; border: 1px solid #3c8dbc; border-radius: 5px; font-family: inherit;">{{ ho_so.mo_ta_thanh_tich }}</textarea>
+        
+        {% elif user_role == 'PHO_BI_THU_TRUONG' and ho_so.trang_thai == 'CHO_TRUONG' %}
+            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#d35400;">Biên tập nội dung Vinh danh:</label>
+            <textarea name="noi_dung_vinh_danh" rows="6" style="width: 100%; padding: 15px; border: 1px solid #3c8dbc; border-radius: 5px; font-family: inherit;">{{ ho_so.mo_ta_thanh_tich }}</textarea>
+        
+        {% elif user.is_superuser and ho_so.trang_thai == 'CHO_TRUONG' %}
+            <label style="display:block; margin-bottom:5px; font-weight:bold; color:#d35400;">Biên tập nội dung Vinh danh:</label>
+            <textarea name="noi_dung_vinh_danh" rows="6" style="width: 100%; padding: 15px; border: 1px solid #3c8dbc; border-radius: 5px; font-family: inherit;">{{ ho_so.mo_ta_thanh_tich }}</textarea>
+        
+        {% else %}
+            <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; line-height: 1.6;">
+                {{ ho_so.mo_ta_thanh_tich|linebreaksbr }}
+            </div>
+        {% endif %}
+    </div>
+
+    <div style="margin-bottom: 30px;">
+        <h4 style="color: #003366; border-left: 4px solid #003366; padding-left: 10px;">
+            <i class="fas fa-images"></i> Minh chứng đính kèm
+        </h4>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+            {% for mc in minh_chung %}
+            <div style="border: 1px solid #ddd; padding: 10px; border-radius: 8px; text-align: center; background: white;">
+                <a href="{{ mc.hinh_anh.url }}" target="_blank">
+                    <img src="{{ mc.hinh_anh.url }}" style="width: 100%; height: 120px; object-fit: cover; border-radius: 5px;">
+                </a>
+                
+                {% if user_role == 'UY_VIEN' and ho_so.trang_thai == 'CHO_MINH_CHUNG' %}
+                    <div style="margin-top: 10px; text-align: left; background: #e3f2fd; padding: 5px; border-radius: 4px;">
+                        <input type="checkbox" name="mc_{{ mc.id }}" id="mc_{{ mc.id }}" style="transform: scale(1.2);"> 
+                        <label for="mc_{{ mc.id }}" style="font-size: 13px; font-weight: bold; cursor: pointer; color: #0d47a1;">Xác nhận Hợp lệ</label>
+                    </div>
+                {% else %}
+                    <div style="margin-top: 5px;">
+                        {% if mc.is_valid %}
+                            <span style="color: green; font-weight: bold; font-size: 12px;"><i class="fas fa-check-circle"></i> Đã duyệt</span>
+                        {% else %}
+                            <span style="color: red; font-size: 12px;"><i class="far fa-circle"></i> Chưa duyệt</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div style="margin-top: 40px; border-top: 2px solid #eee; padding-top: 25px; text-align: right;">
+        
+        {% if user_role == 'UY_VIEN' and ho_so.trang_thai == 'CHO_MINH_CHUNG' %}
+            <button type="submit" name="action" value="tra_ve" class="btn-reject">Trả về (Sai minh chứng)</button>
+            <button type="submit" name="action" value="xac_nhan_mc" class="btn-approve">Xác nhận & Gửi lên Khoa</button>
+        
+        {% elif user_role == 'BI_THU_KHOA' and ho_so.trang_thai == 'CHO_KHOA' %}
+            <input type="text" name="ly_do" placeholder="Lý do từ chối (nếu có)..." class="input-reason">
+            <button type="submit" name="action" value="tu_choi" class="btn-reject">Từ chối</button>
+            <button type="submit" name="action" value="duyet_khoa" class="btn-approve">Duyệt cấp Khoa</button>
+
+        {% elif user_role == 'PHO_BI_THU_KHOA' and ho_so.trang_thai == 'CHO_KHOA' %}
+            <input type="text" name="ly_do" placeholder="Lý do từ chối (nếu có)..." class="input-reason">
+            <button type="submit" name="action" value="tu_choi" class="btn-reject">Từ chối</button>
+            <button type="submit" name="action" value="duyet_khoa" class="btn-approve">Duyệt cấp Khoa</button>
+
+        {% elif user_role == 'BI_THU_TRUONG' and ho_so.trang_thai == 'CHO_TRUONG' %}
+            <input type="text" name="ly_do" placeholder="Lý do từ chối..." class="input-reason">
+            <button type="submit" name="action" value="tu_choi" class="btn-reject">Từ chối</button>
+            <button type="submit" name="action" value="duyet_truong" class="btn-approve">CÔNG BỐ VINH DANH</button>
+        
+        {% elif user_role == 'PHO_BI_THU_TRUONG' and ho_so.trang_thai == 'CHO_TRUONG' %}
+            <input type="text" name="ly_do" placeholder="Lý do từ chối..." class="input-reason">
+            <button type="submit" name="action" value="tu_choi" class="btn-reject">Từ chối</button>
+            <button type="submit" name="action" value="duyet_truong" class="btn-approve">CÔNG BỐ VINH DANH</button>
+
+        {% elif user.is_superuser and ho_so.trang_thai == 'CHO_TRUONG' %}
+            <input type="text" name="ly_do" placeholder="Lý do từ chối..." class="input-reason">
+            <button type="submit" name="action" value="tu_choi" class="btn-reject">Từ chối</button>
+            <button type="submit" name="action" value="duyet_truong" class="btn-approve">CÔNG BỐ VINH DANH</button>
+        
+        {% else %}
+            {% if ho_so.trang_thai == 'CHO_MINH_CHUNG' %}
+                <span style="color: #e67e22;">Đang chờ Ủy viên duyệt minh chứng.</span>
+            {% elif ho_so.trang_thai == 'CHO_KHOA' %}
+                <span style="color: #e67e22;">Đang chờ Bí thư Khoa duyệt.</span>
+            {% elif ho_so.trang_thai == 'CHO_TRUONG' %}
+                <span style="color: #e67e22;">Đang chờ Đoàn trường duyệt cuối.</span>
+            {% elif ho_so.trang_thai == 'DAT' %}
+                <span style="color: green; font-weight: bold;"><i class="fas fa-check-circle"></i> Hồ sơ đã được duyệt và vinh danh.</span>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+</form>
+
+<style>
+    .btn-approve {
+        background: #003366; color: white; border: none; 
+        padding: 10px 25px; border-radius: 5px; cursor: pointer; 
+        font-weight: bold; font-size: 14px;
+    }
+    .btn-reject {
+        background: #e74c3c; color: white; border: none; 
+        padding: 10px 20px; border-radius: 5px; cursor: pointer; 
+        margin-right: 10px;
+    }
+    .input-reason {
+        padding: 10px; width: 250px; border: 1px solid #ddd; 
+        border-radius: 5px; margin-right: 10px;
+    }
+</style>
+{% endblock %}

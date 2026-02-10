@@ -1,0 +1,95 @@
+{% extends 'umt_youth_union/base.html' %}
+{% block title %}Hồ Sơ Cá Nhân{% endblock %}
+
+{% block content %}
+<style>
+    .profile-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); max-width: 900px; margin: 0 auto; }
+    
+    /* HEADER CÓ AVATAR BẤM ĐƯỢC */
+    .profile-header { display: flex; align-items: center; gap: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 30px; margin-bottom: 30px; }
+    
+    .avatar-wrapper { position: relative; cursor: pointer; group: hover; }
+    .avatar-preview { 
+        width: 140px; height: 140px; border-radius: 50%; object-fit: cover; 
+        border: 5px solid #e3f2fd; box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+        transition: 0.3s;
+    }
+    .avatar-overlay {
+        position: absolute; top: 0; left: 0; width: 140px; height: 140px; 
+        border-radius: 50%; background: rgba(0,0,0,0.5); 
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 24px; opacity: 0; transition: 0.3s;
+    }
+    .avatar-wrapper:hover .avatar-overlay { opacity: 1; }
+    .avatar-wrapper:hover .avatar-preview { border-color: #cd161c; }
+
+    /* FORM STYLE */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+    .form-group label { display: block; font-weight: 600; color: #444; margin-bottom: 8px; font-size: 14px; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
+    .btn-save { background: #003366; color: white; padding: 14px 40px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; display: block; margin: 30px auto 0; width: 100%; }
+    .btn-save:hover { background: #cd161c; }
+    .full-width { grid-column: 1 / -1; }
+</style>
+
+<div class="profile-card">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="profile-header">
+            <div class="avatar-wrapper" onclick="document.getElementById('id_avatar').click()">
+                {% if form.instance.avatar %}
+                    <img id="avatar-img" src="{{ form.instance.avatar.url }}" class="avatar-preview">
+                {% else %}
+                    <div id="avatar-default" class="avatar-preview" style="background: #eee; display: flex; align-items: center; justify-content: center; font-size: 50px; color: #ccc;">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                    <img id="avatar-img" class="avatar-preview" style="display: none;">
+                {% endif %}
+                
+                <div class="avatar-overlay"><i class="fas fa-camera"></i></div>
+            </div>
+            
+            <div style="display: none;">{{ form.avatar }}</div>
+
+            <div>
+                <h2 style="margin: 0 0 5px 0; color: #003366;">{{ user.last_name }} {{ user.first_name }}</h2>
+                <p style="margin: 0; color: #777;">{{ user.email }}</p>
+                <span style="background: #e3f2fd; color: #0d47a1; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-top: 10px; display: inline-block;">
+                    {{ form.instance.get_chuc_vu_display }}
+                </span>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            {% for field in form %}
+                {% if field.name != 'avatar' %} <div class="form-group {% if field.name == 'dia_chi_thuong_tru' or field.name == 'dia_chi_tam_tru' %}full-width{% endif %}">
+                    <label>{{ field.label }} {% if field.field.required %}<span style="color:red">*</span>{% endif %}</label>
+                    {{ field }}
+                    {% if field.errors %}<small style="color: red;">{{ field.errors.0 }}</small>{% endif %}
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn-save"><i class="fas fa-save"></i> LƯU THÔNG TIN</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('id_avatar').onchange = function (evt) {
+        var tgt = evt.target || window.event.srcElement,
+            files = tgt.files;
+
+        if (FileReader && files && files.length) {
+            var fr = new FileReader();
+            fr.onload = function () {
+                document.getElementById('avatar-img').src = fr.result;
+                document.getElementById('avatar-img').style.display = 'block';
+                if(document.getElementById('avatar-default')) 
+                    document.getElementById('avatar-default').style.display = 'none';
+            }
+            fr.readAsDataURL(files[0]);
+        }
+    }
+</script>
+{% endblock %}

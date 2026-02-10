@@ -1,0 +1,61 @@
+{% extends 'umt_youth_union/base.html' %}
+{% block title %}Chọn Danh hiệu{% endblock %}
+
+{% block content %}
+<style>
+    .selection-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px; margin-top: 30px;
+    }
+    .select-card {
+        background: white; border-radius: 15px; padding: 30px; text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s;
+        border: 2px solid transparent; cursor: pointer; text-decoration: none; color: inherit;
+        display: block; /* Quan trọng để thẻ a bao trọn */
+    }
+    .select-card:hover {
+        transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        border-color: #cd161c;
+    }
+    .card-icon {
+        width: 80px; height: 80px; border-radius: 50%; background: #f8f9fa;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 20px; font-size: 35px; color: #003366; transition: 0.3s;
+    }
+    .select-card:hover .card-icon { background: #cd161c; color: white; }
+    
+    .card-title { font-size: 18px; font-weight: 800; color: #003366; margin-bottom: 10px; text-transform: uppercase; }
+    .card-desc { font-size: 14px; color: #666; line-height: 1.5; }
+</style>
+
+<div style="text-align: center; margin-bottom: 40px;">
+    <h2 style="color: #003366; text-transform: uppercase; letter-spacing: 1px;">Bạn muốn xét duyệt danh hiệu gì?</h2>
+    <p style="color: #777;">Chọn một trong các danh hiệu bên dưới để bắt đầu nộp hồ sơ minh chứng.</p>
+</div>
+
+<div class="selection-grid">
+    <a href="{% url 'nop_ho_so_chi_tiet' 'SV5T' %}" class="select-card">
+        <div class="card-icon"><i class="fas fa-user-graduate"></i></div>
+        <div class="card-title">Sinh viên 5 Tốt</div>
+        <div class="card-desc">Danh hiệu cao quý dành cho sinh viên hội tụ đủ 5 tiêu chí: Đạo đức, Học tập, Thể lực, Tình nguyện, Hội nhập.</div>
+    </a>
+
+    <a href="{% url 'nop_ho_so_chi_tiet' 'TNTT' %}" class="select-card">
+        <div class="card-icon"><i class="fas fa-award"></i></div>
+        <div class="card-title">Thanh niên Tiên tiến</div>
+        <div class="card-desc">Dành cho đoàn viên thực hiện tốt việc học tập và làm theo tư tưởng, đạo đức, phong cách Hồ Chí Minh.</div>
+    </a>
+
+    <a href="{% url 'nop_ho_so_chi_tiet' 'CBTB' %}" class="select-card">
+        <div class="card-icon"><i class="fas fa-users-cog"></i></div>
+        <div class="card-title">Cán bộ Đoàn Tiêu biểu</div>
+        <div class="card-desc">Vinh danh các cán bộ Đoàn có đóng góp tích cực, sáng tạo và hiệu quả trong công tác Đoàn.</div>
+    </a>
+    
+    <a href="{% url 'nop_ho_so_chi_tiet' 'KHAC' %}" class="select-card">
+        <div class="card-icon"><i class="fas fa-certificate"></i></div>
+        <div class="card-title">Khác</div>
+        <div class="card-desc">Nộp hồ sơ xét duyệt các loại giấy khen, bằng khen hoặc giải thưởng khác.</div>
+    </a>
+</div>
+{% endblock %}

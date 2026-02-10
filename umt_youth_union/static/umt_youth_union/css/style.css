@@ -1,0 +1,31 @@
+body { margin: 0; font-family: Arial, sans-serif; background: #f4f6f9; }
+.wrapper { display: flex; height: 100vh; }
+
+/* Sidebar Style */
+.sidebar {
+    width: 250px;
+    background: #2c3e50; /* Màu xanh đen giống hình */
+    color: white;
+    flex-shrink: 0;
+}
+.sidebar .profile { text-align: center; padding: 20px; border-bottom: 1px solid #34495e; }
+.sidebar .avatar-circle { 
+    width: 60px; height: 60px; background: white; border-radius: 50%; 
+    margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; color: #333; font-size: 24px;
+}
+.sidebar .menu { list-style: none; padding: 0; margin: 0; }
+.sidebar .menu li a {
+    display: block; padding: 15px 20px; color: #b8c7ce; text-decoration: none; border-left: 3px solid transparent;
+}
+.sidebar .menu li a:hover { background: #1a2226; color: white; border-left: 3px solid #3c8dbc; }
+.sidebar .menu-title { padding: 10px 20px; font-size: 12px; color: #4b646f; font-weight: bold; text-transform: uppercase; margin-top: 10px;}
+
+/* Main Content Style */
+.main-content { flex-grow: 1; display: flex; flex-direction: column; }
+header { background: white; padding: 15px 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+.content-body { padding: 30px; }
+
+/* Dashboard Cards */
+.card-container { display: flex; gap: 20px; margin-bottom: 30px; }
+.card { background: white; padding: 20px; border-radius: 5px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border-top: 3px solid #3c8dbc; }
+.card .number { font-size: 30px; font-weight: bold; color: #2c3e50; margin: 10px 0 0; }

@@ -1,0 +1,60 @@
+{% extends 'umt_youth_union/base.html' %}
+{% block title %}Văn bản & Biểu mẫu{% endblock %}
+
+{% block content %}
+<div class="card" style="padding: 25px; border-radius: 10px;">
+    <h3 style="color: #003366; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-top: 0;">
+        <i class="fas fa-book"></i> Kho Văn bản & Biểu mẫu
+    </h3>
+
+    {% if can_upload %}
+    <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin-bottom: 25px; border: 1px dashed #2196f3;">
+        <h4 style="margin-top: 0; color: #0d47a1;"><i class="fas fa-cloud-upload-alt"></i> Đăng tải Văn bản mới (Quyền Quản trị)</h4>
+        <form method="post" enctype="multipart/form-data" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            {% csrf_token %}
+            <input type="text" name="ten_van_ban" placeholder="Tên văn bản..." required style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; flex: 2;">
+            <input type="text" name="loai_danh_hieu" placeholder="Lĩnh vực (VD: SV5T)..." required style="padding: 10px; border: 1px solid #ddd; border-radius: 4px; flex: 1;">
+            <input type="file" name="file_pdf" required style="flex: 1;">
+            <button type="submit" style="background: #003366; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                <i class="fas fa-upload"></i> Đăng ngay
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+    <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background: #f8f9fa; color: #555;">
+                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #eee;">Tên Văn bản</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #eee;">Lĩnh vực</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #eee;">Ngày ban hành</th>
+                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #eee;">Tải xuống</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vb in danh_sach_van_ban %}
+            <tr style="border-bottom: 1px solid #eee;">
+                <td style="padding: 12px; font-weight: bold; color: #333;">
+                    <i class="far fa-file-pdf" style="color: #e74c3c;"></i> {{ vb.ten_van_ban }}
+                </td>
+                <td style="padding: 12px;"><span style="background: #eee; padding: 3px 8px; border-radius: 4px; font-size: 12px;">{{ vb.loai_danh_hieu }}</span></td>
+                <td style="padding: 12px;">{{ vb.ngay_ban_hanh|date:"d/m/Y" }}</td>
+                <td style="padding: 12px;">
+                    {% if vb.file_pdf %}
+                        <a href="{{ vb.file_pdf.url }}" target="_blank" style="color: #003366; font-weight: bold; text-decoration: none;">
+                            <i class="fas fa-download"></i> Tải về
+                        </a>
+                    {% else %}
+                        <span style="color: #999;">--</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 20px; color: #999;">Chưa có văn bản nào được đăng tải.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

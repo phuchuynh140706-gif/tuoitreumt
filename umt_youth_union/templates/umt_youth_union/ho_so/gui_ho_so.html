@@ -1,0 +1,46 @@
+{% extends 'umt_youth_union/base.html' %}
+{% block title %}Gửi Hồ sơ Xét duyệt{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+    <h2 style="color: #003366; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-top: 0;">
+        <i class="fas fa-file-signature"></i> ĐĂNG KÝ XÉT DUYỆT DANH HIỆU
+    </h2>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Loại danh hiệu:</label>
+            <select name="loai_danh_hieu" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                <option value="SV5T">Sinh viên 5 Tốt</option>
+                <option value="TNTT">Thanh niên Tiên tiến làm theo lời Bác</option>
+                <option value="CBTB">Cán bộ Đoàn Tiêu biểu</option>
+                <option value="KHAC">Thành tích khác</option>
+            </select>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Năm học:</label>
+            <input type="text" name="nam_hoc" value="2024-2025" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Mô tả thành tích (Bài viết giới thiệu):</label>
+            <textarea name="mo_ta_thanh_tich" rows="6" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;" placeholder="Liệt kê các thành tích đạt được, quá trình phấn đấu..."></textarea>
+        </div>
+
+        <div style="margin-bottom: 25px; background: #f0f7ff; padding: 20px; border-radius: 8px; border: 1px dashed #3c8dbc;">
+            <label style="font-weight: bold; color: #003366; display: block; margin-bottom: 5px;">
+                <i class="fas fa-images"></i> Minh chứng (Ảnh):
+            </label>
+            <p style="font-size: 13px; color: #666; margin-top: 0;">Giữ phím <b>Ctrl</b> để chọn nhiều ảnh cùng lúc.</p>
+            <input type="file" name="minh_chung_files" multiple accept="image/*" required>
+        </div>
+
+        <button type="submit" style="background: #cd161c; color: white; padding: 12px 30px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%;">
+            <i class="fas fa-paper-plane"></i> GỬI HỒ SƠ
+        </button>
+    </form>
+</div>
+{% endblock %}

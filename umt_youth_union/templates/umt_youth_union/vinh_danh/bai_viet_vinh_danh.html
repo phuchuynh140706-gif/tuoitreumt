@@ -1,0 +1,30 @@
+{% extends 'umt_youth_union/base.html' %}
+{% block title %}{{ bai_viet.tieu_de }}{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.05);">
+    <a href="{% url 'vinh_danh' %}" style="text-decoration: none; color: #666;">&larr; Quay lại danh sách</a>
+    
+    <div style="text-align: center; margin-top: 20px;">
+        <h1 style="color: #b71c1c; margin-bottom: 10px;">{{ bai_viet.tieu_de }}</h1>
+        <p style="color: #888; font-style: italic;">Ngày đăng: {{ bai_viet.ngay_dang|date:"d/m/Y" }}</p>
+    </div>
+
+    <div style="margin: 30px 0;">
+        {% if bai_viet.hinh_anh_vinh_danh %}
+            <img src="{{ bai_viet.hinh_anh_vinh_danh.url }}" style="width: 100%; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        {% endif %}
+    </div>
+
+    <div style="line-height: 1.8; font-size: 16px; color: #333; text-align: justify;">
+        {{ bai_viet.noi_dung_bai_viet|linebreaks }}
+    </div>
+    
+    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+        <h4 style="color: #003366; margin-bottom: 5px;">{{ bai_viet.sinh_vien.ho_ten }}</h4>
+        <span style="background: #e3f2fd; color: #0d47a1; padding: 5px 15px; border-radius: 15px; font-size: 12px; font-weight: bold;">
+            {{ bai_viet.sinh_vien.get_chuc_vu_display }}
+        </span>
+    </div>
+</div>
+{% endblock %}

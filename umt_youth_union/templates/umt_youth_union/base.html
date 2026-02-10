@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hệ thống Đoàn vụ{% endblock %} | UMT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #fdfcfb; color: #444; }
+        .wrapper { display: flex; width: 100%; min-height: 100vh; }
+        .content-wrapper { width: 100%; margin-left: 260px; display: flex; flex-direction: column; }
+
+        /* HEADER */
+        .main-header { 
+            background: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 900; 
+        }
+        .header-logo { font-size: 20px; font-weight: 800; color: #003366; }
+        .header-right { display: flex; align-items: center; gap: 25px; }
+
+        /* --- CSS CÁI CHUÔNG --- */
+        .notification-dropdown { position: relative; cursor: pointer; }
+        .badge-count {
+            position: absolute; top: -8px; right: -8px;
+            background: #cd161c; color: white; border-radius: 50%;
+            width: 18px; height: 18px; font-size: 10px; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; border: 2px solid white;
+        }
+        .noti-box {
+            display: none; position: absolute; top: 35px; right: -10px;
+            width: 320px; background: white; border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15); z-index: 1000; border: 1px solid #eee;
+        }
+        .noti-header { padding: 12px 15px; background: #f8f9fa; font-weight: bold; border-bottom: 1px solid #eee; font-size: 14px; color: #333; }
+        .noti-list { max-height: 300px; overflow-y: auto; }
+        .noti-item { 
+            display: flex; gap: 10px; padding: 12px 15px; text-decoration: none; color: #333; 
+            border-bottom: 1px solid #f1f1f1; transition: 0.2s; align-items: start;
+        }
+        .noti-item:hover { background: #f0f8ff; }
+        .noti-item.unread { background: #e3f2fd; } /* Màu tin chưa đọc */
+        .noti-icon { color: #003366; margin-top: 2px; font-size: 16px; }
+        .noti-text strong { font-size: 13px; display: block; margin-bottom: 2px; }
+        .noti-text p { margin: 0; font-size: 12px; color: #666; line-height: 1.4; }
+        .noti-text small { font-size: 11px; color: #999; display: block; margin-top: 4px; }
+
+        .content { padding: 30px; max-width: 1200px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        {% include 'umt_youth_union/sidebar.html' %}
+
+        <div class="content-wrapper">
+            <header class="main-header">
+                <div class="header-logo">
+                    <i class="fas fa-bars" style="cursor: pointer; margin-right: 15px; color: #888;"></i>
+                    <span>CỔNG THÔNG TIN ĐOÀN</span>
+                </div>
+
+                <div class="header-right">
+                    <div class="notification-dropdown">
+                        <i class="fas fa-bell" style="font-size: 22px; color: #555;" onclick="toggleNoti()"></i>
+                        
+                        {% if chung_so_thong_bao > 0 %}
+                            <span class="badge-count">{{ chung_so_thong_bao }}</span>
+                        {% endif %}
+
+                        <div id="noti-box" class="noti-box">
+                            <div class="noti-header">Thông báo mới</div>
+                            <div class="noti-list">
+                                {% for tb in chung_thong_bao_list %}
+                                    <a href="{{ tb.link_lien_ket|default:'#' }}" class="noti-item {% if not tb.da_xem %}unread{% endif %}">
+                                        <div class="noti-icon"><i class="fas fa-info-circle"></i></div>
+                                        <div class="noti-text">
+                                            <strong>{{ tb.tieu_de }}</strong>
+                                            <p>{{ tb.noi_dung|truncatechars:60 }}</p>
+                                            <small>{{ tb.ngay_tao|date:"d/m H:i" }}</small>
+                                        </div>
+                                    </a>
+                                {% empty %}
+                                    <div style="padding: 20px; text-align: center; color: #999; font-size: 13px;">Chưa có thông báo nào.</div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-weight: 600; font-size: 14px;">Xin chào, {{ user.last_name }} {{ user.first_name }}</span>
+                        <a href="{% url 'logout' %}" style="color: #cd161c; text-decoration: none; border: 1px solid #cd161c; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">
+                            <i class="fas fa-sign-out-alt"></i> Thoát
+                        </a>
+                    </div>
+                </div>
+            </header>
+            
+            <section class="content">
+                {% block content %}
+                {% endblock %}
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function toggleNoti() {
+            var box = document.getElementById("noti-box");
+            if (box.style.display === "block") {
+                box.style.display = "none";
+            } else {
+                box.style.display = "block";
+            }
+        }
+        window.onclick = function(event) {
+            if (!event.target.matches('.fa-bell') && !event.target.closest('.notification-dropdown')) {
+                var box = document.getElementById("noti-box");
+                if (box) box.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

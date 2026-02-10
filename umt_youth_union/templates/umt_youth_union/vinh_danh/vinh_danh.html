@@ -1,0 +1,101 @@
+{% extends 'umt_youth_union/base.html' %}
+{% block title %}Bảng Vàng Vinh Danh{% endblock %}
+
+{% block content %}
+<style>
+    /* Header chữ Đỏ - Vàng */
+    .honor-header { text-align: center; margin-bottom: 50px; }
+    .honor-header h2 { 
+        font-family: 'Times New Roman', serif; font-size: 40px; 
+        text-transform: uppercase; margin-bottom: 15px; letter-spacing: 2px;
+        background: -webkit-linear-gradient(#b71c1c, #d90429);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+    }
+    .honor-header .line { 
+        width: 150px; height: 4px; margin: 0 auto; 
+        background: linear-gradient(90deg, transparent, #fbc02d, #ff6f00, transparent); 
+    }
+
+    .honor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px; }
+
+    /* Card thiết kế sang trọng */
+    .honor-card {
+        background: white; border-radius: 15px; overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1); transition: all 0.4s ease;
+        text-decoration: none; color: inherit; display: block; position: relative;
+    }
+    .honor-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(183, 28, 28, 0.2); }
+
+    /* Ảnh bìa màu Đỏ Đô */
+    .honor-cover {
+        height: 250px; position: relative; overflow: hidden;
+        background: linear-gradient(135deg, #800000 0%, #b71c1c 100%);
+    }
+    .honor-img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
+    .honor-card:hover .honor-img { transform: scale(1.1); }
+
+    /* Badge Năm */
+    .badge-year {
+        position: absolute; top: 15px; left: 0;
+        background: linear-gradient(90deg, #ffb300, #ff6f00);
+        color: white; padding: 5px 15px; font-weight: bold; font-size: 13px;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.3); clip-path: polygon(0 0, 100% 0, 90% 50%, 100% 100%, 0 100%);
+    }
+
+    /* Badge Chức vụ (Đã sửa lỗi hiển thị) */
+    .honor-role {
+        display: inline-block; background: #fff3e0; color: #e65100;
+        padding: 5px 15px; border-radius: 20px; font-size: 11px; font-weight: bold;
+        text-transform: uppercase; margin-bottom: 10px; border: 1px solid #ffe0b2;
+    }
+
+    .honor-body { padding: 30px 20px; text-align: center; position: relative; }
+    .honor-name { font-family: 'Times New Roman', serif; font-size: 24px; font-weight: bold; color: #b71c1c; margin: 0 0 5px 0; }
+    .honor-title { color: #555; font-size: 14px; font-weight: 600; border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px; }
+
+    .medal-icon {
+        position: absolute; top: -30px; right: 20px;
+        width: 60px; height: 60px; background: white; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-size: 30px; color: #ffb300;
+        border: 4px solid white;
+    }
+</style>
+
+<div class="honor-header">
+    <h2><i class="fas fa-award"></i> Bảng Vàng Vinh Danh</h2>
+    <div class="line"></div>
+</div>
+
+<div class="honor-grid">
+    {% for item in danh_sach %}
+    <a href="{% url 'chi_tiet_vinh_danh' item.id %}" class="honor-card">
+        <div class="honor-cover">
+            <div class="badge-year">NĂM {{ item.nam_dat }}</div>
+            
+            {% if item.hinh_anh_vinh_danh %}
+                <img src="{{ item.hinh_anh_vinh_danh.url }}" class="honor-img">
+            {% elif item.sinh_vien.avatar %}
+                <img src="{{ item.sinh_vien.avatar.url }}" class="honor-img">
+            {% else %}
+                <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.3);">
+                    <i class="fas fa-user-graduate" style="font-size:60px;"></i>
+                </div>
+            {% endif %}
+            
+            <div class="medal-icon"><i class="fas fa-medal"></i></div>
+        </div>
+        
+        <div class="honor-body">
+            <span class="honor-role">{{ item.sinh_vien.get_chuc_vu_display }}</span>
+            
+            <h3 class="honor-name">{{ item.sinh_vien.ho_ten }}</h3>
+            <div class="honor-title">{{ item.get_danh_hieu_display }}</div>
+        </div>
+    </a>
+    {% empty %}
+    <div style="text-align: center; width: 100%; padding: 50px; color: #999;">Chưa có gương mặt nào được vinh danh.</div>
+    {% endfor %}
+</div>
+{% endblock %}

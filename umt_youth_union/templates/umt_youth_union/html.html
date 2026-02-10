@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quy chế & Hướng dẫn - Đoàn UMT</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f9; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { color: #003366; border-bottom: 2px solid #cd161c; padding-bottom: 10px; }
+        .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #666; }
+        .item { border-bottom: 1px solid #eee; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
+        .download-btn { background: #3c8dbc; color: white; padding: 5px 10px; text-decoration: none; border-radius: 4px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'login' %}" class="btn-back">&larr; Quay lại trang Đăng nhập</a>
+        
+        <h2>📜 Văn bản & Hướng dẫn xét duyệt</h2>
+        <p>Dành cho toàn thể sinh viên tham khảo.</p>
+
+        {% for vb in danh_sach_van_ban %}
+        <div class="item">
+            <div>
+                <strong>{{ vb.ten_van_ban }}</strong><br>
+                <small style="color: #888;">Ngày ban hành: {{ vb.ngay_ban_hanh|date:"d/m/Y" }}</small>
+            </div>
+            {% if vb.file_pdf %}
+            <a href="{{ vb.file_pdf.url }}" target="_blank" class="download-btn">Tải về</a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p>Chưa có văn bản nào được công bố.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

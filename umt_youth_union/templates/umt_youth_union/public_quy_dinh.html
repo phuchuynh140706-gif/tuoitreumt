@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quy chế & Hướng dẫn - Đoàn UMT</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; padding: 40px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h2 { color: #003366; border-bottom: 2px solid #cd161c; padding-bottom: 15px; margin-top: 0; }
+        .btn-back { display: inline-block; margin-bottom: 20px; text-decoration: none; color: #555; font-weight: 500; }
+        .btn-back:hover { color: #003366; }
+        .item { border-bottom: 1px solid #eee; padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+        .download-btn { background: #003366; color: white; padding: 8px 15px; text-decoration: none; border-radius: 6px; font-size: 14px; transition: 0.3s; }
+        .download-btn:hover { background: #cd161c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="{% url 'login' %}" class="btn-back"><i class="fas fa-arrow-left"></i> &larr; Quay lại trang Đăng nhập</a>
+        
+        <h2>📜 Văn bản & Hướng dẫn (Công khai)</h2>
+        <p>Dành cho sinh viên tra cứu các quy định, biểu mẫu xét duyệt.</p>
+
+        {% for vb in danh_sach_van_ban %}
+        <div class="item">
+            <div>
+                <strong style="font-size: 1.1em; color: #333;">{{ vb.ten_van_ban }}</strong><br>
+                <span style="background: #eee; padding: 2px 8px; border-radius: 4px; font-size: 12px; color: #666;">{{ vb.loai_danh_hieu }}</span>
+                <small style="color: #888; margin-left: 10px;">Ngày: {{ vb.ngay_ban_hanh|date:"d/m/Y" }}</small>
+            </div>
+            {% if vb.file_pdf %}
+            <a href="{{ vb.file_pdf.url }}" target="_blank" class="download-btn">Tải về</a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <p style="text-align: center; color: #999;">Chưa có văn bản nào được công bố.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

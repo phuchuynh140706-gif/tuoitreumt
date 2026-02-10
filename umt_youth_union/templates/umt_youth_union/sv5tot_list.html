@@ -1,0 +1,61 @@
+{% extends 'umt_youth_union/base.html' %}
+
+{% block title %}Xét Sinh viên 5 Tốt{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 style="margin: 0; color: #2c3e50;">Danh sách Hồ sơ Xét duyệt</h3>
+        <a href="#" class="btn-add">+ Thêm hồ sơ mới</a>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Mã SV</th>
+                <th>Họ tên</th>
+                <th>Năm học</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ho_so in danh_sach_ho_so %}
+            <tr>
+                <td>{{ ho_so.sinh_vien.ma_sinh_vien }}</td>
+                <td>{{ ho_so.sinh_vien.ho_ten }}</td>
+                <td>{{ ho_so.nam_hoc }}</td>
+                <td>
+                    {% if ho_so.trang_thai == 'DAT' %}
+                        <span class="badge success">Đạt</span>
+                    {% elif ho_so.trang_thai == 'KHONG_DAT' %}
+                        <span class="badge danger">Không đạt</span>
+                    {% else %}
+                        <span class="badge warning">Chờ duyệt</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="#" style="color: #3c8dbc;">Xem chi tiết</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 20px;">Chưa có hồ sơ nào.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    .data-table th, .data-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #ddd; }
+    .data-table th { background-color: #f8f9fa; color: #333; font-weight: bold; }
+    .badge { padding: 5px 10px; border-radius: 4px; font-size: 12px; color: white; }
+    .success { background-color: #28a745; }
+    .warning { background-color: #ffc107; color: #333; }
+    .danger { background-color: #dc3545; }
+    .btn-add { background: #3c8dbc; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; }
+    .btn-add:hover { background: #367fa9; }
+</style>
+{% endblock %}

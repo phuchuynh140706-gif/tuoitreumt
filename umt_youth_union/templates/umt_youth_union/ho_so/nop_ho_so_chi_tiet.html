@@ -1,0 +1,129 @@
+{% extends 'umt_youth_union/base.html' %}
+{% block title %}Nộp Minh Chứng{% endblock %}
+
+{% block content %}
+<style>
+    .submit-container { max-width: 900px; margin: 0 auto; }
+    
+    /* Header */
+    .page-header { margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+    .page-header h2 { color: #003366; margin: 0; font-size: 24px; text-transform: uppercase; }
+    .page-header p { color: #666; font-size: 14px; margin-top: 5px; }
+
+    /* Box Hướng dẫn */
+    .guide-box {
+        background: #fff8e1; border-left: 5px solid #ffc107; 
+        padding: 20px; border-radius: 8px; margin-bottom: 30px;
+    }
+    .guide-title { font-weight: bold; color: #f57f17; display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .btn-download-guide {
+        background: #f57f17; color: white; padding: 5px 15px; border-radius: 20px; 
+        text-decoration: none; font-size: 12px; font-weight: bold; margin-left: auto;
+    }
+
+    /* Từng Tiêu chí (Card) */
+    .criteria-card {
+        background: white; border-radius: 10px; padding: 25px; margin-bottom: 25px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.05); border: 1px solid #eee;
+        transition: 0.3s;
+    }
+    .criteria-card:hover { border-color: #003366; box-shadow: 0 5px 15px rgba(0,51,102,0.1); }
+
+    .criteria-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+    
+    /* Checkbox & Label */
+    .criteria-label { 
+        font-size: 18px; font-weight: bold; color: #003366; 
+        display: flex; align-items: center; gap: 12px; cursor: pointer; 
+    }
+    .criteria-icon {
+        width: 40px; height: 40px; background: #e3f2fd; color: #003366;
+        border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-size: 18px;
+    }
+    input[type="checkbox"] { transform: scale(1.5); accent-color: #27ae60; cursor: pointer; }
+
+    .criteria-desc { 
+        margin-left: 52px; color: #555; font-size: 14px; line-height: 1.5; 
+        background: #f9f9f9; padding: 10px 15px; border-radius: 6px; 
+        border-left: 3px solid #ccc; margin-bottom: 15px;
+    }
+
+    /* Khu vực Upload riêng biệt */
+    .upload-zone {
+        margin-left: 52px; border: 2px dashed #3c8dbc; border-radius: 8px;
+        padding: 20px; text-align: center; background: #f0f8ff;
+    }
+    .upload-zone:hover { background: #e1f0fe; }
+    .upload-hint { font-size: 13px; color: #666; margin-bottom: 10px; display: block; }
+
+    /* Ghi chú thêm */
+    .note-section { margin-top: 30px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+    
+    /* Nút Submit */
+    .btn-submit-all {
+        display: block; width: 100%; padding: 15px; margin-top: 30px;
+        background: linear-gradient(135deg, #003366 0%, #0056b3 100%);
+        color: white; font-weight: bold; font-size: 18px; text-transform: uppercase;
+        border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;
+        box-shadow: 0 5px 15px rgba(0,51,102,0.3);
+    }
+    .btn-submit-all:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,51,102,0.4); }
+</style>
+
+<div class="submit-container">
+    
+    <div class="page-header">
+        <a href="{% url 'chon_danh_hieu' %}" style="text-decoration: none; color: #888; font-size: 13px;">&larr; Quay lại chọn danh hiệu</a>
+        <h2>Hồ sơ: {{ loai_danh_hieu }}</h2>
+    </div>
+
+    <div class="guide-box">
+        <div class="guide-title">
+            <i class="fas fa-lightbulb"></i> HƯỚNG DẪN & QUY ĐỊNH
+            {% if quy_dinh.file_pdf %}
+                <a href="{{ quy_dinh.file_pdf.url }}" target="_blank" class="btn-download-guide">
+                    <i class="fas fa-download"></i> Tải văn bản gốc
+                </a>
+            {% endif %}
+        </div>
+        <p style="margin: 0; font-size: 14px;">
+            Vui lòng đọc kỹ các tiêu chí bên dưới. Với mỗi tiêu chí bạn đạt được, hãy <b>đánh dấu (tick)</b> vào ô vuông và <b>tải lên hình ảnh minh chứng</b> tương ứng (Giấy khen, chứng nhận...).
+        </p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% for tc in tieu_chi_list %}
+        <div class="criteria-card">
+            <div class="criteria-header">
+                <label class="criteria-label">
+                    <input type="checkbox" name="check_{{ tc.id }}" checked>
+                    <div class="criteria-icon"><i class="fas {{ tc.icon }}"></i></div>
+                    {{ tc.name }}
+                </label>
+            </div>
+            
+            <div class="criteria-desc">
+                <strong>Yêu cầu:</strong> {{ tc.desc }}
+            </div>
+            
+            <div class="upload-zone">
+                <span class="upload-hint"><i class="fas fa-cloud-upload-alt"></i> Tải minh chứng cho mục này (Có thể chọn nhiều ảnh)</span>
+                <input type="file" name="file_{{ tc.id }}" multiple accept="image/*" class="form-control">
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="note-section">
+            <label style="font-weight: bold; margin-bottom: 10px; display: block; color: #333;">Ghi chú thêm (Nếu có):</label>
+            <textarea name="ghi_chu_them" rows="3" style="width: 100%; border: 1px solid #ddd; border-radius: 5px; padding: 10px;" placeholder="Ví dụ: Em có 2 giấy khen cùng loại..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit-all">
+            <i class="fas fa-paper-plane"></i> Hoàn tất & Gửi Hồ sơ
+        </button>
+    </form>
+</div>
+{% endblock %}
