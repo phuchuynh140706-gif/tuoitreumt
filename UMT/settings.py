@@ -185,3 +185,10 @@ DATABASES = {
 # 4. Cấu hình nén file tĩnh
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# settings.py
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgresql://postgres.hrczlhcvuwqdrfqpdjpk:phuchuynh1407@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres',
+        conn_max_age=600
+    )
+}
